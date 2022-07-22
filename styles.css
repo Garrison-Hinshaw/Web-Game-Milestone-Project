@@ -1,3 +1,5 @@
+
+
 #playArea{
     border: 5px solid black;
     position: absolute;
@@ -18,5 +20,11 @@
     width: 600px;
     height: 400px;
     text-align: center;
+}
+
+#beginButton{
+    border: 1px solid purple;
+    background-color:purple;
+    color: navajowhite;
 }
 
