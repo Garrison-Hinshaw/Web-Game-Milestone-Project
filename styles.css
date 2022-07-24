@@ -15,8 +15,10 @@
     transform: translate(-50%, -50%);
     width: 1400px;
     height: 800px;
-    background-color:rgb(124, 251, 255);
+    background-image: url('Assets/images/Background.png');
     display: block;
+    /*background retrieved from edermunizz on itch.io https://edermunizz.itch.io/free-pixel-art-forest */
+   
 }
 /*Formatted Start Screen*/
 #howToPlay {
@@ -44,3 +46,12 @@
     display: block;
 }
 
+#score-keeper{
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    width: 300px; 
+    text-align:right;
+    color: white;
+    font-family: "Cinzel Decorative Regular";  
+}
