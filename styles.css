@@ -55,3 +55,9 @@
     color: white;
     font-family: "Cinzel Decorative Regular";  
 }
+#wizard{
+    height: 85px;
+    position: relative;
+    left: 20px;
+    top: 650px;
+}
