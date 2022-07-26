@@ -28,7 +28,7 @@ window.addEventListener('load', function(){
             this.height = 150;
             this.x = 0;
             this.y = this.gameHeight - this.height;
-            this.image = document.getElementById(wizard)
+            this.image = document.getElementById('wizard')
         }
         draw(context){
             context.fillStyle = 'white';
