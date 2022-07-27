@@ -1,9 +1,12 @@
+
 window.addEventListener('load', function(){
     const canvas = document.getElementById("playArea");
     const ctx = canvas.getContext('2d');
     canvas.width = 1400;
     canvas.height = 780;
-
+    const beginButton = document.getElementById('beginButton')
+    const startScreen = document.getElementById('startScreen')
+//Used key up and key down eventlisteners in order to make the player move when key is down and and stop when key is up
     class InputHandler {
         constructor(){
             this.keys = [];
@@ -19,13 +22,13 @@ window.addEventListener('load', function(){
             });
         }
     }
-
+    //setup player class for player controlled wizard
     class Player {
         constructor(gameWidth, gameHeight){
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
-            this.width = 365,
-            this.height = 349;
+            this.width = 218,
+            this.height = 150;
             this.x = 0;
             this.y = this.gameHeight - this.height;
             this.image = document.getElementById('wizard')
@@ -33,15 +36,16 @@ window.addEventListener('load', function(){
             this.frameY = 0;
             this.speed = 0;
             this.vy = 0;
-            this.weight = 1;
+            this.weight = 1; //lines 32-36 make up the lines and size of the object learned this from mdn
+            
         }
         draw(context){
-            context.fillStyle = 'white';
-            context.fillRect(this.x, this.y, this.width, this.height);
+            
+            //context.fillRect(this.x, this.y, this.width, this.height); no longer need box but leaving for dimensions and process
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
         }
         update(input){
-            //horizontal movement
+            //user movement function for wad keys
             this.x += this.speed;
             if (input.keys.indexOf('d')> -1) {
                 this.speed = 5;
@@ -68,7 +72,25 @@ window.addEventListener('load', function(){
     }
 
     class Background {
-
+        constructor(gameWidth, gameHeight){
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.image = document.getElementById('backgroundImage')
+            this.x = 0;
+            this.y = 0;
+            this.width = 1400;
+            this.height = 780;
+            this.speed = 1; //Sets speed of background scroll
+        }
+        draw(context){
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
+        }
+        //added a duplicate of background and set this.x + this.y in order to create illusion of consistent scroll
+        update(){
+            this.x -= this.speed;
+            if (this.x < 0 - this.width) this.x = 0;
+        }
     }
 
     class Enemy {
@@ -85,12 +107,23 @@ window.addEventListener('load', function(){
 
     const input = new InputHandler();
     const player = new Player(canvas.width, canvas.height);
+    const background = new Background(canvas.width, canvas.height)
     
     function animate(){
-        ctx.clearRect(0,0, canvas.width, canvas.height)
+        ctx.clearRect(0,0, canvas.width, canvas.height);
+        background.draw(ctx);
+        background.update();
         player.draw(ctx);
         player.update(input);
         requestAnimationFrame(animate)
     }
-    animate();
+    function start(){
+    beginButton.style.display = 'none'
+    startScreen.style.display = 'none'
+    animate(); //would be considered the 'main' function
+    }
+    background.draw(ctx); //Added so that I would have a background on start 
+    beginButton.addEventListener('click', (event) => {
+        start()
+    });
 });
