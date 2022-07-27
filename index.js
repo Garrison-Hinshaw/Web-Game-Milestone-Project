@@ -101,7 +101,7 @@ window.addEventListener('load', function(){
 
     }
 
-    function displayStartText(){
+    function Score(){
 
     }
 
