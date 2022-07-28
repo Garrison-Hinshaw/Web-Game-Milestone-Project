@@ -6,6 +6,7 @@ window.addEventListener('load', function(){
     canvas.height = 780;
     const beginButton = document.getElementById('beginButton')
     const startScreen = document.getElementById('startScreen')
+    
 //Used key up and key down eventlisteners in order to make the player move when key is down and and stop when key is up
     class InputHandler {
         constructor(){
@@ -64,11 +65,13 @@ window.addEventListener('load', function(){
             } else {
                 this.vy = 0;
             }
-            if (this.y >= this.gameHeight - this.height) this.y = this.gameHeight - this.height
+            if (this.y >= this.gameHeight - this.height) this.y = this.gameHeight - this.height;
+
         }
         Ground(){
             return this.y >= this.gameHeight - this.height;
         }
+
     }
 
     class Background {
@@ -93,9 +96,39 @@ window.addEventListener('load', function(){
         }
     }
 
+    class Fireball{
+        constructor(gameWidth, gameHeight){
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = 71,
+            this.height = 50;
+            this.x = 0;
+            this.y = this.gameHeight - this.height;
+            this.image = document.getElementById('fireball')
+            this.frameX = 0;
+            this.frameY = 0;
+            this.speed = 3;
+        }
+        draw(context){
+            
+            context.fillRect(this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
+    }
+
+    update(){
+        player.x += player.speed;
+        if(player.x < 0 - player.width) player.x = 0;
+        
+    }
+    shootFireball(){
+      
+        
+    }
+}
     class Enemy {
 
     }
+ 
 
     function handleEnemies(){
 
@@ -105,25 +138,30 @@ window.addEventListener('load', function(){
 
     }
 
+
     const input = new InputHandler();
     const player = new Player(canvas.width, canvas.height);
-    const background = new Background(canvas.width, canvas.height)
-    
+    const background = new Background(canvas.width, canvas.height);
+    const fireball = new Fireball(canvas.width, canvas.height);
     function animate(){
         ctx.clearRect(0,0, canvas.width, canvas.height);
         background.draw(ctx);
         background.update();
         player.draw(ctx);
         player.update(input);
+        fireball.draw(ctx);
+        fireball.shootFireball();
         requestAnimationFrame(animate)
     }
+    
     function start(){
     beginButton.style.display = 'none'
     startScreen.style.display = 'none'
     animate(); //would be considered the 'main' function
-    }
+    };
+    
     background.draw(ctx); //Added so that I would have a background on start 
     beginButton.addEventListener('click', (event) => {
-        start()
+        start();
     });
 });

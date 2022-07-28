@@ -1,12 +1,12 @@
 body {
-    background: black;
+    background: rgb(124, 11, 124) ;
 }
 #container {
     position: relative;
 }
 #startScreen {
-    border: 1px solid rgb(219, 15, 219) ;
-    color:rgb(124, 11, 124);
+    border: 5px solid navajowhite ;
+    color: navajowhite;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -14,14 +14,14 @@ body {
     width: 600px;
     height: 500px;
     text-align: center;
-    background-color: navajowhite;
+    background-color: rgb(124, 11, 124);
     font-family: "Cinzel Decorative Regular";
     display: block;
 }
 #beginButton{
-    border: 2px solid rgb(124, 251, 255);
+    border: 2px solid navajowhite;
     background-color: rgb(124, 11, 124) ;
-    color: rgb(124, 251, 255);
+    color: navajowhite;
     font-family: "Cinzel Decorative Regular";
     text-align: center;
     margin: auto;
@@ -38,7 +38,7 @@ body {
     top: 50%;
     left: 50%;
     transform: translate(-50%, 5%);
-    border: 5px solid rgb(124, 11, 124);
+    border: 5px solid navajowhite;
 }
 
 #wizard{
@@ -51,5 +51,9 @@ body {
 }
 
 #trolls {
+    display: none
+}
+
+#fireball {
     display: none
 }
