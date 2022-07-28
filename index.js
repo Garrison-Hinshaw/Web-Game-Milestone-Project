@@ -112,7 +112,7 @@ window.addEventListener('load', function(){
         }
         draw(context){
             
-            context.fillRect(this.x, this.y, this.width, this.height);
+            //context.fillRect(this.x, this.y, this.width, this.height); might need later for collision don't know yet
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
 
@@ -166,20 +166,4 @@ window.addEventListener('load', function(){
         start();
     });
 });
-
-const beginButton = document.getElementById('beginButton')
-const scoreKeeper = document.querySelector('#score-keeper span')
-let wizard = document.getElementById('wizard')
-
-
-
-//Added Event Listener for button and made it to where on click instruction start screen dissappears
-beginButton.addEventListener("click", (event) => {
-    playGame()
-})
-
-function playGame(){
-    beginButton.style.display = 'none'
-    howToPlay.style.display = 'none'
-}
 
