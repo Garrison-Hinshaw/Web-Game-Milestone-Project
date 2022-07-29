@@ -67,7 +67,7 @@ window.addEventListener('load', function(){
                 this.vy = 0;
             }
             if (this.y >= this.gameHeight - this.height) this.y = this.gameHeight - this.height;
-
+            
         }
         Ground(){
             return this.y >= this.gameHeight - this.height;
@@ -115,10 +115,12 @@ window.addEventListener('load', function(){
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
-    update(){
+    update(input){
+        
+        if(input.keys.indexOf(' ')> -1){
         this.x += this.speed;
-        if (this.x < 0 - this.width) this.x = 0;
     }
+}
     }
 
 
@@ -147,7 +149,7 @@ window.addEventListener('load', function(){
         player.draw(ctx);
         player.update(input);
         fireball.draw(ctx);
-        fireball.update();
+        fireball.update(input);
         requestAnimationFrame(animate)
     }
     
@@ -156,10 +158,10 @@ window.addEventListener('load', function(){
     startScreen.style.display = 'none'
     animate(); //would be considered the 'main' function
     };
-    
     background.draw(ctx); //Added so that I would have a background on start 
     beginButton.addEventListener('click', (event) => {
         start();
     });
+
 });
 
