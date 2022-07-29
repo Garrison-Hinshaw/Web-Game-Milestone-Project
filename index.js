@@ -103,29 +103,25 @@ window.addEventListener('load', function(){
             this.gameHeight = gameHeight;
             this.width = 71,
             this.height = 50;
-            this.x = 0;
-            this.y = this.gameHeight - this.height;
+            this.x = player.x;
+            this.y = player.y;
             this.image = document.getElementById('fireball')
-            this.frameX = 0;
-            this.frameY = 0;
+            this.frameX = player.frameX;
+            this.frameY = player.frameY;
             this.speed = 3;
         }
         draw(context){
             
-            //context.fillRect(this.x, this.y, this.width, this.height); might need later for collision don't know yet
+            //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
-
     update(){
-        player.x += player.speed;
-        if(player.x < 0 - player.width) player.x = 0;
-        
+        this.x += this.speed;
+        if (this.x < 0 - this.width) this.x = 0;
     }
-    shootFireball(){
-      
-        
     }
-}
+
+
     class Enemy {
 
     }
@@ -151,7 +147,7 @@ window.addEventListener('load', function(){
         player.draw(ctx);
         player.update(input);
         fireball.draw(ctx);
-        fireball.shootFireball();
+        fireball.update();
         requestAnimationFrame(animate)
     }
     
