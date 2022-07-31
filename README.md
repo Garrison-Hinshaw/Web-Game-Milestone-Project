@@ -6,7 +6,7 @@ This game is called Wicked Wizards. It is a side-scroller shooter game where you
 
 All graphics are legally used through craftpix and other free image hosters provided by the course.
 
-Knowledge of canvas and how to use it came from the HackerU Software Development Bootcamp, MDN, and a myriad of youtube videos that go over the basics of how to use canvas and its different functions.
+Knowledge of canvas and how to use it came from the HackerU Software Development Bootcamp, MDN, and a myriad of youtube videos most importantly Frank's Laboratory for really delving deep and going over the basics of how to use canvas and its different functions.
 
 I hope you enjoy,
 
