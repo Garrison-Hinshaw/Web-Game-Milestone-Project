@@ -7,18 +7,21 @@ window.addEventListener('load', function(){
     canvas.height = 780;
     const beginButton = document.getElementById('beginButton')
     const startScreen = document.getElementById('startScreen')
+    let enemies = [];
+    let obstacles = [];
+    let fireballs = [];
     
 //Used key up and key down eventlisteners in order to make the player move when key is down and and stop when key is up
     class InputHandler {
         constructor(){
             this.keys = [];
             window.addEventListener('keydown', e => {
-                if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === ' ' || e.key === 'w' && this.keys.indexOf(e.key) === -1){
+                if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === 'w' && this.keys.indexOf(e.key) === -1){
                     this.keys.push(e.key);
                 }
             });
             window.addEventListener('keyup', e => {
-                if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === ' ' || e.key === 'w'){
+                if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === 'w'){
                     this.keys.splice(this.keys.indexOf(e.key), 1);
                 }
             });
@@ -37,8 +40,8 @@ window.addEventListener('load', function(){
             this.frameX = 0;
             this.frameY = 0;
             this.speed = 0;
-            this.vy = 0;
-            this.weight = 1; //lines 32-36 make up the lines and size of the object learned this from mdn
+            this.vy = 3;
+            this.weight = 1; //lines 32-36 make up the position and size of the object learned this from mdn
             
         }
         draw(context){
@@ -62,7 +65,7 @@ window.addEventListener('load', function(){
             else if (this.x > this.gameWidth-this.width) this.x = this.gameWidth - this.width
             this.y += this.vy;
             if (!this.Ground()){
-                this.vy += this.weight;
+                this.vy += 0.35;
             } else {
                 this.vy = 0;
             }
@@ -115,24 +118,89 @@ window.addEventListener('load', function(){
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
-    update(input){
-        
-        if(input.keys.indexOf(' ')> -1){
-        this.x += this.speed;
+    update(){
+        this.x ++;
+
     }
 }
-    }
-
 
     class Enemy {
-
-    }
+        constructor(gameWidth, gameHeight){
+            this.gameWidth = gameWidth;
+            this.gameHeight = gameHeight;
+            this.width = 280,
+            this.height = 175;
+            this.x = this.gameWidth;
+            this.y = this.gameHeight - this.height;
+            this.image = document.getElementById('troll')
+            this.speed = Math.random() * 2 + 2;
  
-
-    function handleEnemies(){
-
     }
 
+    draw(context){
+        context.fillRect(this.x, this.y, this.width, this.height);
+        context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
+    }
+    
+    update(){
+        this.x--;
+    }
+}
+
+class Obstacles{
+    constructor(gameWidth, gameHeight){
+        this.gameWidth = gameWidth;
+        this.gameHeight = gameHeight;
+        this.width = 50,
+        this.height = 50;
+        this.x = this.gameWidth;
+        this.y = this.gameHeight - this.height;
+        this.image = document.getElementById('')
+        this.speed = 3;
+}
+draw(context){
+    context.fillRect(this.x, this.y, this.width, this.height);
+    context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
+}
+
+update(){
+    
+}
+}
+
+function handleObstacles(deltaTime){
+    if (obstacleTime > obstacleInt + randomObstacleInt){
+        obstacles.push(new Obstacles(canvas.width, canvas.height));
+        randomObstacleInt = Math.random() * 2000 + 1000; 
+        //makes it to where the objects come more randomized intervals to give the game more challenge
+        obstacleTime = 0
+    } else {
+        obstacleTime += deltaTime;
+    }
+    obstacles.forEach(obstacle => {
+        obstacle.draw(ctx);
+        obstacle.update();
+    })
+}
+
+    function handleEnemies(deltaTime){
+        if (enemyTime > enemyInt + randomEnemyInterval){
+            enemies.push(new Enemy(canvas.width, canvas.height));
+            randomEnemyInterval = Math.random() * 3000 + 1000;
+            enemyTime = 0
+        } else {
+            enemyTime += deltaTime;
+        }
+        enemies.forEach(enemy => {
+            enemy.draw(ctx);
+            enemy.update();
+        })
+    }
+
+    function handleFireballs(){
+        
+    }
+    
     function Score(){
 
     }
@@ -142,21 +210,34 @@ window.addEventListener('load', function(){
     const player = new Player(canvas.width, canvas.height);
     const background = new Background(canvas.width, canvas.height);
     const fireball = new Fireball(canvas.width, canvas.height);
-    function animate(){
+    let lastTime = 0;
+    let enemyTime = 0;
+    let enemyInt = 3000;
+    let randomEnemyInterval = Math.random() * 3000 + 1000;
+    let obstacleTime = 0;
+    let obstacleInt = 2000;
+    let randomObstacleInt = Math.random() * 2000 + 1000;
+
+    function animate(timeStamp){
+        const deltaTime = timeStamp - lastTime 
+        //will allow us to spawn in enemies time stamp is automatically recorded by request animation frame per mdn
+        lastTime = timeStamp;
         ctx.clearRect(0,0, canvas.width, canvas.height);
         background.draw(ctx);
         background.update();
         player.draw(ctx);
         player.update(input);
         fireball.draw(ctx);
-        fireball.update(input);
+        //handleFireballs;
+        handleEnemies(deltaTime);
+        //handleObstacles(deltaTime);
         requestAnimationFrame(animate)
     }
     
     function start(){
     beginButton.style.display = 'none'
     startScreen.style.display = 'none'
-    animate(); //would be considered the 'main' function
+    animate(0); 
     };
     background.draw(ctx); //Added so that I would have a background on start 
     beginButton.addEventListener('click', (event) => {
