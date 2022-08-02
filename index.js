@@ -10,6 +10,7 @@ window.addEventListener('load', function(){
     let enemies = [];
     let obstacles = [];
     let fireballs = [];
+    let score = 0;
     
 //Used key up and key down eventlisteners in order to make the player move when key is down and and stop when key is up
     class InputHandler {
@@ -36,7 +37,7 @@ window.addEventListener('load', function(){
             this.width = 218,
             this.height = 150;
             this.x = 0;
-            this.y = this.gameHeight - this.height;
+            this.y = this.gameHeight - this.height - 30;
             this.image = document.getElementById('wizard')
             this.frameX = 0;
             this.frameY = 0;
@@ -66,7 +67,7 @@ window.addEventListener('load', function(){
             else if (this.x > this.gameWidth-this.width) this.x = this.gameWidth - this.width
             this.y += this.vy;
             if (!this.Ground()){
-                this.vy += 0.35;
+                this.vy += 0.25;
             } else {
                 this.vy = 0;
             }
@@ -108,7 +109,7 @@ window.addEventListener('load', function(){
             this.width = 71,
             this.height = 50;
             this.x = player.x;
-            this.y = player.y;
+            this.y = player.y + 40;
             this.image = document.getElementById('fireball')
             this.frameX = player.frameX;
             this.frameY = player.frameY ;
@@ -121,7 +122,9 @@ window.addEventListener('load', function(){
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
         };
         update(){
-            this.x += 400 ;
+            this.x += this.speed;
+            this.x +=  100;
+            
         };
 
     }
@@ -135,13 +138,15 @@ window.addEventListener('load', function(){
             this.height = 175;
             this.x = this.gameWidth;
             this.y = this.gameHeight - this.height;
+            this.frameX = 0;
+            this.frameY = 0;
             this.image = document.getElementById('troll')
             this.speed = Math.random() * 2 + 2;
  
     }
 
     draw(context){
-        context.fillRect(this.x, this.y, this.width, this.height);
+        //context.fillRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
     update(){
@@ -153,15 +158,17 @@ class Obstacles{
     constructor(gameWidth, gameHeight){
         this.gameWidth = gameWidth;
         this.gameHeight = gameHeight;
-        this.width = 50,
-        this.height = 50;
+        this.width = 100,
+        this.height = 74;
         this.x = this.gameWidth;
-        this.y = this.gameHeight - this.height;
-        this.image = document.getElementById('')
-        this.speed = 3;
+        this.y = this.gameHeight - this.height - 20;
+        this.frameX = 0;
+        this.frameY = 0;
+        this.image = document.getElementById('rock')
+        this.speed = 10;
 }
 draw(context){
-    context.fillRect(this.x, this.y, this.width, this.height);
+    //context.fillRect(this.x, this.y, this.width, this.height);
     context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
 }
 
@@ -174,7 +181,7 @@ update(){
 function handleObstacles(deltaTime){
     if (obstacleTime > obstacleInt + randomObstacleInt){
         obstacles.push(new Obstacles(canvas.width, canvas.height));
-        randomObstacleInt = Math.random() * 2000 + 1000; 
+        randomObstacleInt = Math.random() * 8000 + 3000; 
         //makes it to where the objects come more randomized intervals to give the game more challenge
         obstacleTime = 0
     } else {
@@ -219,6 +226,7 @@ function handleObstacles(deltaTime){
                 fireball.draw(ctx);
                 fireball.update();
                 fireball.speed = 5;
+                laserTick = 0;
             });
         
     } else {
@@ -226,7 +234,7 @@ function handleObstacles(deltaTime){
     }
 }
     function Score(){
-
+        context.fillstyle = 'black';
     }
 
 
@@ -255,7 +263,7 @@ function handleObstacles(deltaTime){
         //fireball.draw(ctx);
         handleFireballs();
         handleEnemies(deltaTime);
-        //handleObstacles(deltaTime);
+        handleObstacles(deltaTime);
         requestAnimationFrame(animate)
     }
     
