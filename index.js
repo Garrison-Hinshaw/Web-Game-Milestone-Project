@@ -11,18 +11,19 @@ window.addEventListener('load', function(){
     let obstacles = [];
     let fireballs = [];
     let score = 0;
+    let gameOver = false;
     
 //Used key up and key down eventlisteners in order to make the player move when key is down and and stop when key is up
     class InputHandler {
         constructor(){
             this.keys = [];
             window.addEventListener('keydown', e => {
-                if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === 'w' && this.keys.indexOf(e.key) === -1){
+                if (e.key === ' ' || e.key === 'a' || e.key === 'd' && this.keys.indexOf(e.key) === -1){
                     this.keys.push(e.key);
                 } 
             });
             window.addEventListener('keyup', e => {
-                if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === 'w'){
+                if (e.key === ' ' || e.key === 'a' || e.key === 'd'){
                     this.keys.splice(this.keys.indexOf(e.key), 1);
                     
                 }
@@ -47,18 +48,40 @@ window.addEventListener('load', function(){
             
         }
         draw(context){
-            
+            //context.strokeRect(this.x , this.y, this.width, this.height);
+            //context.beginPath();
+            //context.arc(this.x + this.width/2, this.y + this.height/2, this.width/2, 0, Math.PI *2);
+            //context.stroke()
             //context.fillRect(this.x, this.y, this.width, this.height); no longer need box but leaving for dimensions and process
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
         }
-        update(input){
-            //user movement function for wad keys
+        update(input, enemies, obstacles){
+            //Collision
+            enemies.forEach(enemy => {
+                const dx = enemy.x - this.x;
+                const dy = enemy.y - this.y;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                if(distance < enemy.width/2 -200 + this.width/2){
+                    gameOver = true;
+                }
+            })
+
+            obstacles.forEach(obstacle => {
+                const dx = obstacle.x - this.x;
+                const dy = obstacle.y - this.y;
+                const distance = Math.sqrt(dx*dx + dy*dy);
+                if(distance< obstacle.width/2 - 50 + this.width/2){
+                    gameOver = true;
+                }
+            })
+            
+            //user movement function
             this.x += this.speed;
             if (input.keys.indexOf('d')> -1) {
                 this.speed = 5;
             } else if (input.keys.indexOf('a')> -1) {
                 this.speed = -5;
-            } else if (input.keys.indexOf('w') > -1 && this.Ground()){
+            } else if (input.keys.indexOf(' ') > -1 && this.Ground()){
                 this.vy -= 10
             } else {
                 this.speed = 0;
@@ -67,7 +90,7 @@ window.addEventListener('load', function(){
             else if (this.x > this.gameWidth-this.width) this.x = this.gameWidth - this.width
             this.y += this.vy;
             if (!this.Ground()){
-                this.vy += 0.25;
+                this.vy += 0.15;
             } else {
                 this.vy = 0;
             }
@@ -78,6 +101,24 @@ window.addEventListener('load', function(){
             return this.y >= this.gameHeight - this.height;
         }
 
+    }
+
+    class Fireball {
+        constructor(x,y, radius, color, velocity){
+            this.x = x;
+            this.y = y;
+            this.radius = radius;
+            this.color = color;
+            this.velocity = velocity;
+            
+        }
+        draw(){
+            context.beginPath()
+            context.arc(this.x, this.y, this.radius, 0, Math.PI *2, false)
+            context.fillstyle = this.color
+            context.fill()
+        
+        }
     }
 
     class Background {
@@ -102,39 +143,11 @@ window.addEventListener('load', function(){
         }
     }
 
-    class Fireball{
-        constructor(gameWidth, gameHeight){
-            this.gameWidth = gameWidth;
-            this.gameHeight = gameHeight;
-            this.width = 71,
-            this.height = 50;
-            this.x = player.x;
-            this.y = player.y + 40;
-            this.image = document.getElementById('fireball')
-            this.frameX = player.frameX;
-            this.frameY = player.frameY ;
-            this.speed = 0;
-            this.delay = 0;
-        }
-        draw(context){
-            
-            //context.fillRect(this.x, this.y, this.width, this.height);
-            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
-        };
-        update(){
-            this.x += this.speed;
-            this.x +=  100;
-            
-        };
-
-    }
-    
-
     class Enemy {
         constructor(gameWidth, gameHeight){
             this.gameWidth = gameWidth;
             this.gameHeight = gameHeight;
-            this.width = 280,
+            this.width = 240,
             this.height = 175;
             this.x = this.gameWidth;
             this.y = this.gameHeight - this.height;
@@ -142,16 +155,22 @@ window.addEventListener('load', function(){
             this.frameY = 0;
             this.image = document.getElementById('troll')
             this.speed = Math.random() * 2 + 2;
+            this.deleteObject = false;
  
     }
 
     draw(context){
+        context.strokeRect(this.x + 40 , this.y, this.width -50, this.height);
         //context.fillRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
     update(){
         this.x--;
+        if(this.x < 0 -  this.width) {this.deleteObject = true;
+        score++;
     }
+
+}
 }
 
 class Obstacles{
@@ -166,15 +185,20 @@ class Obstacles{
         this.frameY = 0;
         this.image = document.getElementById('rock')
         this.speed = 10;
+        this.deleteObject = false;
 }
 draw(context){
+    //context.strokeRect(this.x , this.y, this.width, this.height);
     //context.fillRect(this.x, this.y, this.width, this.height);
     context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
 }
 
 update(){
     this.x--;
+    if(this.x < 0 -  this.width) {this.deleteObject = true;
+        score ++;
     }
+}
 }
 
 
@@ -191,6 +215,7 @@ function handleObstacles(deltaTime){
         obstacle.draw(ctx);
         obstacle.update();
     })
+    obstacles = obstacles.filter(obstacle => !obstacle.deleteObject);
 }
 
     function handleEnemies(deltaTime){
@@ -205,38 +230,24 @@ function handleObstacles(deltaTime){
             enemy.draw(ctx);
             enemy.update();
         })
+        enemies = enemies.filter(enemy => !enemy.deleteObject);
     }
 
-    function handleFireballs(){
-    window.addEventListener('keydown', e=>{
-        canvas.key = e.keyCode;
-        if(canvas.key === 32){
-            canvas.key= e.keyCode;
-            shoot = true;
-        }
-    })
-
-    window.addEventListener('keyup', function(){
-        canvas.key = false;
-    })
-        if(canvas.key && canvas.key === 32){
-        console.log("shoot");
-        fireballs.push(new Fireball(canvas.width, canvas.height));
-        fireballs.forEach(fireball => {
-                fireball.draw(ctx);
-                fireball.update();
-                fireball.speed = 5;
-                laserTick = 0;
-            });
-        
-    } else {
-        fireballs.splice(fireball, 1)
-    }
-}
-    function Score(){
-        context.fillstyle = 'black';
+    function Score(context){
+        context.fillStyle = 'purple';
+        context.font = '30px Cinzel Decorative Regular';
+        context.fillText('Score: ' + score, 20, 50)
     }
 
+    function youLost(context){
+        if(gameOver){
+        context.font = "30px Cinzel Decorative Regular";
+        context.fillStyle = "white";
+        context.textAlign = "center";
+        context.fillText("Ouch, They got your Sorcerer's Stones! Try Again", canvas.width/2, 300)
+
+    }
+    }
 
     const input = new InputHandler();
     const player = new Player(canvas.width, canvas.height);
@@ -259,12 +270,15 @@ function handleObstacles(deltaTime){
         background.draw(ctx);
         background.update();
         player.draw(ctx);
-        player.update(input);
-        //fireball.draw(ctx);
-        handleFireballs();
+        player.update(input, enemies, obstacles);
+        //fireball.update();d
         handleEnemies(deltaTime);
         handleObstacles(deltaTime);
-        requestAnimationFrame(animate)
+        //handleFireballs();
+        Score(ctx);
+        //youLost(ctx);
+       //if(!gameOver) 
+       requestAnimationFrame(animate);
     }
     
     function start(){
