@@ -1,6 +1,6 @@
 # Wicked Wizards
 
-https://garrison-hinshaw.github.io/Web-Game-Milestone-Project/
+https://garrison-hinshaw.github.io/Wicked-Wizards/
 
 This project was made by Garrison Hinshaw for the Hacker U Milestone Project 1
 
