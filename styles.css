@@ -53,15 +53,19 @@ body {
 }
 
 #backgroundImage {
-    display: none
+    display: none;
 }
 
 #troll {
-    display: none
+    display: none;
 }
 
 #fireball {
-    display: none
+    display: none;
+}
+
+#rock {
+    display: none;
 }
 /*Created play area for game */
 
