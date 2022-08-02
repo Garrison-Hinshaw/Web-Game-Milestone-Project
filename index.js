@@ -70,7 +70,7 @@ window.addEventListener('load', function(){
                 const dx = obstacle.x - this.x;
                 const dy = obstacle.y - this.y;
                 const distance = Math.sqrt(dx*dx + dy*dy);
-                if(distance< obstacle.width/2 - 50 + this.width/2){
+                if(distance < obstacle.width/2 - 50 + this.width/2){
                     gameOver = true;
                 }
             })
@@ -255,7 +255,11 @@ function handleObstacles(deltaTime){
         context.font = "30px Cinzel Decorative Regular";
         context.fillStyle = "white";
         context.textAlign = "center";
-        context.fillText("Ouch, They got your Sorcerer's Stones! Try Again", canvas.width/2, 300)
+        context.fillText("Ouch, They got your Sorcerer's Stones! Try Again", canvas.width/2, 300);
+        var audio = new Audio('music/Scream+19.mp3'); //music taken from freesoundeffects.com
+        audio.play();
+        audio.volume = 0.1;
+        
 
     }
     }
