@@ -1,5 +1,6 @@
 # Wicked Wizards
 
+https://garrison-hinshaw.github.io/Web-Game-Milestone-Project/
 This project was made by Garrison Hinshaw for the Hacker U Milestone Project 1
 
 This game is called Wicked Wizards. It is a side-scroller shooter game where you have to defeat enemies and dodge obstacles in order to score points. Lets see how far you can make it!!
