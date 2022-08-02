@@ -18,11 +18,12 @@ window.addEventListener('load', function(){
             window.addEventListener('keydown', e => {
                 if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === 'w' && this.keys.indexOf(e.key) === -1){
                     this.keys.push(e.key);
-                }
+                } 
             });
             window.addEventListener('keyup', e => {
                 if (e.key === 's' || e.key === 'a' || e.key === 'd' || e.key === 'w'){
                     this.keys.splice(this.keys.indexOf(e.key), 1);
+                    
                 }
             });
         }
@@ -110,19 +111,21 @@ window.addEventListener('load', function(){
             this.y = player.y;
             this.image = document.getElementById('fireball')
             this.frameX = player.frameX;
-            this.frameY = player.frameY;
-            this.speed = 3;
+            this.frameY = player.frameY ;
+            this.speed = 0;
+            this.delay = 0;
         }
         draw(context){
             
             //context.fillRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
-    }
-    update(){
-        this.x ++;
+        };
+        update(){
+            this.x += 400 ;
+        };
 
     }
-}
+    
 
     class Enemy {
         constructor(gameWidth, gameHeight){
@@ -141,7 +144,6 @@ window.addEventListener('load', function(){
         context.fillRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
-    
     update(){
         this.x--;
     }
@@ -164,9 +166,10 @@ draw(context){
 }
 
 update(){
-    
+    this.x--;
+    }
 }
-}
+
 
 function handleObstacles(deltaTime){
     if (obstacleTime > obstacleInt + randomObstacleInt){
@@ -198,9 +201,30 @@ function handleObstacles(deltaTime){
     }
 
     function handleFireballs(){
+    window.addEventListener('keydown', e=>{
+        canvas.key = e.keyCode;
+        if(canvas.key === 32){
+            canvas.key= e.keyCode;
+            shoot = true;
+        }
+    })
+
+    window.addEventListener('keyup', function(){
+        canvas.key = false;
+    })
+        if(canvas.key && canvas.key === 32){
+        console.log("shoot");
+        fireballs.push(new Fireball(canvas.width, canvas.height));
+        fireballs.forEach(fireball => {
+                fireball.draw(ctx);
+                fireball.update();
+                fireball.speed = 5;
+            });
         
+    } else {
+        fireballs.splice(fireball, 1)
     }
-    
+}
     function Score(){
 
     }
@@ -217,6 +241,7 @@ function handleObstacles(deltaTime){
     let obstacleTime = 0;
     let obstacleInt = 2000;
     let randomObstacleInt = Math.random() * 2000 + 1000;
+    let fireballTimer = 0;
 
     function animate(timeStamp){
         const deltaTime = timeStamp - lastTime 
@@ -227,8 +252,8 @@ function handleObstacles(deltaTime){
         background.update();
         player.draw(ctx);
         player.update(input);
-        fireball.draw(ctx);
-        //handleFireballs;
+        //fireball.draw(ctx);
+        handleFireballs();
         handleEnemies(deltaTime);
         //handleObstacles(deltaTime);
         requestAnimationFrame(animate)
