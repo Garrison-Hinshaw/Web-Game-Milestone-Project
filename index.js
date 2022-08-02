@@ -9,7 +9,7 @@ window.addEventListener('load', function(){
     const startScreen = document.getElementById('startScreen')
     let enemies = [];
     let obstacles = [];
-    let fireballs = [];
+    //let fireballs = [];
     let score = 0;
     let gameOver = false;
     
@@ -82,7 +82,11 @@ window.addEventListener('load', function(){
             } else if (input.keys.indexOf('a')> -1) {
                 this.speed = -5;
             } else if (input.keys.indexOf(' ') > -1 && this.Ground()){
-                this.vy -= 10
+                this.vy -= 10;
+                var audio = new Audio('music/15188_1460389388.mp3'); //music taken from freesfx
+                audio.play();
+                audio.volume = 0.2;
+                    
             } else {
                 this.speed = 0;
             }
@@ -102,24 +106,30 @@ window.addEventListener('load', function(){
         }
 
     }
-
-    class Fireball {
-        constructor(x,y, radius, color, velocity){
-            this.x = x;
-            this.y = y;
-            this.radius = radius;
-            this.color = color;
-            this.velocity = velocity;
+    //Coming back to fireballs on own time because I could not get them to where I wanted them by due date
+    //class Fireball {
+        //constructor(x,y, radius, color, velocity){
+            //this.x = x;
+            //this.y = y;
+            //this.radius = radius;
+            //this.color = color;
+            //this.velocity = velocity;
             
-        }
-        draw(){
-            context.beginPath()
-            context.arc(this.x, this.y, this.radius, 0, Math.PI *2, false)
-            context.fillstyle = this.color
-            context.fill()
+       // }
+        //draw(){
+            //ctx.beginPath()
+            //ctx.arc(this.x, this.y, this.radius, 0, Math.PI *2, false)
+            //ctx.fillStyle = this.color
+            //ctx.fill()
+        //};
         
-        }
-    }
+        //shootFireball(){
+            //window.addEventListener('click' , (event)=>{
+                //const fireball = new Fireball(event.clientX, event.clientY, 20, 'purple', null);
+                //fireball.draw();
+            //})
+        //}
+    //}
 
     class Background {
         constructor(gameWidth, gameHeight){
@@ -130,7 +140,7 @@ window.addEventListener('load', function(){
             this.y = 0;
             this.width = 1400;
             this.height = 780;
-            this.speed = 1; //Sets speed of background scroll
+            this.speed = 2; //Sets speed of background scroll
         }
         draw(context){
             context.drawImage(this.image, this.x, this.y, this.width, this.height);
@@ -154,20 +164,21 @@ window.addEventListener('load', function(){
             this.frameX = 0;
             this.frameY = 0;
             this.image = document.getElementById('troll')
-            this.speed = Math.random() * 2 + 2;
+            this.speed = 3;
             this.deleteObject = false;
  
     }
 
     draw(context){
-        context.strokeRect(this.x + 40 , this.y, this.width -50, this.height);
+        //context.strokeRect(this.x + 40 , this.y, this.width -50, this.height);
         //context.fillRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
     }
     update(){
-        this.x--;
+        this.x-= 3;
         if(this.x < 0 -  this.width) {this.deleteObject = true;
-        score++;
+        score += 5;
+        this.speed = 3;
     }
 
 }
@@ -184,7 +195,7 @@ class Obstacles{
         this.frameX = 0;
         this.frameY = 0;
         this.image = document.getElementById('rock')
-        this.speed = 10;
+        this.speed = 0;
         this.deleteObject = false;
 }
 draw(context){
@@ -194,7 +205,7 @@ draw(context){
 }
 
 update(){
-    this.x--;
+    this.x-= 2;
     if(this.x < 0 -  this.width) {this.deleteObject = true;
         score ++;
     }
@@ -205,7 +216,7 @@ update(){
 function handleObstacles(deltaTime){
     if (obstacleTime > obstacleInt + randomObstacleInt){
         obstacles.push(new Obstacles(canvas.width, canvas.height));
-        randomObstacleInt = Math.random() * 8000 + 3000; 
+        randomObstacleInt = Math.random() * 500 + 1000; 
         //makes it to where the objects come more randomized intervals to give the game more challenge
         obstacleTime = 0
     } else {
@@ -221,7 +232,7 @@ function handleObstacles(deltaTime){
     function handleEnemies(deltaTime){
         if (enemyTime > enemyInt + randomEnemyInterval){
             enemies.push(new Enemy(canvas.width, canvas.height));
-            randomEnemyInterval = Math.random() * 3000 + 1000;
+            randomEnemyInterval = Math.random() * 200 + 1000;
             enemyTime = 0
         } else {
             enemyTime += deltaTime;
@@ -252,7 +263,7 @@ function handleObstacles(deltaTime){
     const input = new InputHandler();
     const player = new Player(canvas.width, canvas.height);
     const background = new Background(canvas.width, canvas.height);
-    const fireball = new Fireball(canvas.width, canvas.height);
+    //const fireball = new Fireball(canvas.width, canvas.height);
     let lastTime = 0;
     let enemyTime = 0;
     let enemyInt = 3000;
@@ -260,7 +271,7 @@ function handleObstacles(deltaTime){
     let obstacleTime = 0;
     let obstacleInt = 2000;
     let randomObstacleInt = Math.random() * 2000 + 1000;
-    let fireballTimer = 0;
+    //let fireballTimer = 0;
 
     function animate(timeStamp){
         const deltaTime = timeStamp - lastTime 
@@ -271,24 +282,27 @@ function handleObstacles(deltaTime){
         background.update();
         player.draw(ctx);
         player.update(input, enemies, obstacles);
-        //fireball.update();d
         handleEnemies(deltaTime);
         handleObstacles(deltaTime);
-        //handleFireballs();
+        //fireball.shootFireball();
         Score(ctx);
-        //youLost(ctx);
-       //if(!gameOver) 
-       requestAnimationFrame(animate);
+        youLost(ctx);
+        if(!gameOver) requestAnimationFrame(animate);
     }
     
     function start(){
-    beginButton.style.display = 'none'
-    startScreen.style.display = 'none'
-    animate(0); 
+    beginButton.style.display = 'none';
+    startScreen.style.display = 'none';
+    animate(0);
+    var audio = new Audio('music/extremeaction.mp3'); //music taken from Bensound
+    audio.play();
+    audio.volume = 0.05;
+    audio.loop === true;
+        
     };
     background.draw(ctx); //Added so that I would have a background on start 
     beginButton.addEventListener('click', (event) => {
-        start();
+    start();
     });
 
 });
